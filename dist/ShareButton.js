@@ -20,7 +20,7 @@ module.exports = function(it){
   return toString.call(it).slice(8, -1);
 };
 },{}],6:[function(_dereq_,module,exports){
-var core = module.exports = {};
+var core = module.exports = {version: '1.2.0'};
 if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
 },{}],7:[function(_dereq_,module,exports){
 var global     = _dereq_('./$.global')
@@ -142,9 +142,8 @@ module.exports = 0 in Object('z') ? Object : function(it){
   return cof(it) == 'String' ? it.split('') : Object(it);
 };
 },{"./$.cof":5}],16:[function(_dereq_,module,exports){
-// http://jsperf.com/core-js-isobject
 module.exports = function(it){
-  return it !== null && (typeof it == 'object' || typeof it == 'function');
+  return typeof it === 'object' ? it !== null : typeof it === 'function';
 };
 },{}],17:[function(_dereq_,module,exports){
 'use strict';
@@ -315,7 +314,7 @@ module.exports = function(key){
 },{}],31:[function(_dereq_,module,exports){
 // 22.1.3.31 Array.prototype[@@unscopables]
 var UNSCOPABLES = _dereq_('./$.wks')('unscopables');
-if(!(UNSCOPABLES in []))_dereq_('./$.hide')(Array.prototype, UNSCOPABLES, {});
+if([][UNSCOPABLES] == undefined)_dereq_('./$.hide')(Array.prototype, UNSCOPABLES, {});
 module.exports = function(key){
   [][UNSCOPABLES][key] = true;
 };
@@ -379,6 +378,7 @@ var $              = _dereq_('./$')
   , SUPPORT_DESC   = _dereq_('./$.support-desc')
   , $def           = _dereq_('./$.def')
   , $redef         = _dereq_('./$.redef')
+  , $fails         = _dereq_('./$.fails')
   , shared         = _dereq_('./$.shared')
   , setTag         = _dereq_('./$.tag')
   , uid            = _dereq_('./$.uid')
@@ -403,22 +403,17 @@ var $              = _dereq_('./$')
   , useNative      = typeof $Symbol == 'function'
   , ObjectProto    = Object.prototype;
 
-var setSymbolDesc = SUPPORT_DESC ? function(){ // fallback for old Android
-  try {
-    return _create(setDesc({}, HIDDEN, {
-      get: function(){
-        return setDesc(this, HIDDEN, {value: false})[HIDDEN];
-      }
-    }))[HIDDEN] || setDesc;
-  } catch(e){
-    return function(it, key, D){
-      var protoDesc = getDesc(ObjectProto, key);
-      if(protoDesc)delete ObjectProto[key];
-      setDesc(it, key, D);
-      if(protoDesc && it !== ObjectProto)setDesc(ObjectProto, key, protoDesc);
-    };
-  }
-}() : setDesc;
+// fallback for old Android, https://code.google.com/p/v8/issues/detail?id=687
+var setSymbolDesc = SUPPORT_DESC && $fails(function(){
+  return _create(setDesc({}, 'a', {
+    get: function(){ return setDesc(this, 'a', {value: 7}).a; }
+  })).a != 7;
+}) ? function(it, key, D){
+  var protoDesc = getDesc(ObjectProto, key);
+  if(protoDesc)delete ObjectProto[key];
+  setDesc(it, key, D);
+  if(protoDesc && it !== ObjectProto)setDesc(ObjectProto, key, protoDesc);
+} : setDesc;
 
 var wrap = function(tag){
   var sym = AllSymbols[tag] = _create($Symbol.prototype);
@@ -507,9 +502,8 @@ if(!useNative){
 }
 
 // MS Edge converts symbol values to JSON as {}
-// WebKit converts symbol values in objects to JSON as null
-if(!useNative || _dereq_('./$.fails')(function(){
-  return JSON.stringify([{a: $Symbol()}, [$Symbol()]]) != '[{},[null]]';
+if(!useNative || $fails(function(){
+  return JSON.stringify([$Symbol()]) != '[null]';
 }))$redef($Symbol.prototype, 'toJSON', function toJSON(){
   if(useNative && isObject(this))return this;
 });
