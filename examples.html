@@ -11,6 +11,7 @@
   </style>
   <meta name='description' content='A simple, light, flexible, and good-looking share button'>
   <meta name='og:image' content='http://carrot.is/img/fb-share.jpg'>
+  <link href='dist/ShareButtonStyles.css' rel='stylesheet'>
 </head>
 <body>
   <a class='fork' href="https://github.com/carrot/share-button">
@@ -20,9 +21,9 @@
   <div class='share-button share-button-left'></div>
   <div class='share-button share-button-bottom'></div>
   <div class='share-button share-button-bottom'></div>
-  <script src='build/share.js'></script>
+  <script src='build/ShareButton.min.js'></script>
   <script>
-    var share_button_top = new Share(".share-button-top", {
+    var share_button_top = new ShareButton(".share-button-top", {
       title: "Share Button Multiple Element Test",
       ui: {
         flyout: "top center"
@@ -34,7 +35,7 @@
       }
     });
 
-    var share_button_left = new Share(".share-button-left", {
+    var share_button_left = new ShareButton(".share-button-left", {
       title: "Share Button Multiple Instantiation Test",
       ui: {
         flyout: "top left",

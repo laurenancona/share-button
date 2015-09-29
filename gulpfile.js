@@ -16,13 +16,16 @@ gulp.task('unbuild', function() {
 
 gulp.task('style', function() {
   var styleShareButton = gulp
-    .src('src/styles.styl')
+    .src('src/Styles.styl')
     .pipe(accord('stylus', {
       use: [
         autoprefixer(),
         axis(),
         poststylus([postcssSVG({ paths: ['./src/svg' ]})])
       ]
+    }))
+    .pipe(rename({
+      basename: 'ShareButtonStyles'
     }))
     .pipe(gulp.dest('dist/'))
     .pipe(minifyCss())
