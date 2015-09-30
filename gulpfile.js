@@ -16,16 +16,13 @@ gulp.task('unbuild', function() {
 
 gulp.task('style', function() {
   var styleShareButton = gulp
-    .src('src/Styles.styl')
+    .src('src/share-button.styl')
     .pipe(accord('stylus', {
       use: [
         autoprefixer(),
         axis(),
         poststylus([postcssSVG({ paths: ['./src/svg' ]})])
       ]
-    }))
-    .pipe(rename({
-      basename: 'ShareButtonStyles'
     }))
     .pipe(gulp.dest('dist/'))
     .pipe(minifyCss())
@@ -37,12 +34,11 @@ gulp.task('style', function() {
 
 gulp.task('script', function() {
     var umdShareButton = gulp
-        .src(['src/ShareButton.js'], { read: false })
+        .src(['src/share-button.js'], { read: false })
         .pipe(browserify({
           transform: ['babelify'],
           standalone: 'ShareButton'
         }))
-        .pipe(rename('ShareButton.js'))
         .pipe(gulp.dest('dist/'))
         .pipe(uglify())
         .pipe(rename({ suffix: '.min' }))
