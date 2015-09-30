@@ -29,6 +29,5 @@ If you submit a pull request that doesn't have a clean commit log, we will ask y
 
 Happy Developing!
 
-![cute
-dog](http://hellogiggles.hellogiggles.netdna-cdn.com/wp-content/uploads/2015/03/17/53451-Cute-Dog.jpg)
+![cute dog](http://hellogiggles.hellogiggles.netdna-cdn.com/wp-content/uploads/2015/03/17/53451-Cute-Dog.jpg)
 
